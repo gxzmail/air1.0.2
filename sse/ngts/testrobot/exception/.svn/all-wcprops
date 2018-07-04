@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/DevTools/!svn/ver/396/3.TESTTOOLS/AIR_Driver/trunk/src/sse/ngts/testrobot/exception
+END
+ApplTimeOutException.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/DevTools/!svn/ver/396/3.TESTTOOLS/AIR_Driver/trunk/src/sse/ngts/testrobot/exception/ApplTimeOutException.java
+END
+ApplFatalException.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/DevTools/!svn/ver/396/3.TESTTOOLS/AIR_Driver/trunk/src/sse/ngts/testrobot/exception/ApplFatalException.java
+END
+ApplPauseException.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/DevTools/!svn/ver/396/3.TESTTOOLS/AIR_Driver/trunk/src/sse/ngts/testrobot/exception/ApplPauseException.java
+END
+ApplRunFailException.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/DevTools/!svn/ver/396/3.TESTTOOLS/AIR_Driver/trunk/src/sse/ngts/testrobot/exception/ApplRunFailException.java
+END
+ApplChkFailException.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/DevTools/!svn/ver/396/3.TESTTOOLS/AIR_Driver/trunk/src/sse/ngts/testrobot/exception/ApplChkFailException.java
+END
