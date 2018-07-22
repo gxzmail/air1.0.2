@@ -123,6 +123,13 @@ public class ApplReadScript {
     	/**********************************************************
          * 把所有的步骤按照交易日、交易阶段、优先级排序，并输出到文件中
          * ********************************************************/
+/***xzguo
+	caseSteps.getTradePhase()函数作用是返回NGTS_AM_AIR_ONXX_XXX_XXX_CV01.xls和框架中
+	执行阶段字段的取值类型与数字的hash表。举例:
+	String:online Integer:0
+	String:batch  Integer:1
+	该hash表结束
+***/
     	Collections.sort(this.steps,new ApplStepsSorts(caseSteps.getTradePhase()));    	
     	ApplExeSheetWrite.writeExcuteSheet(ApplConstValues.excuteSheetName,
     			                        A.getExecuteFile(),
