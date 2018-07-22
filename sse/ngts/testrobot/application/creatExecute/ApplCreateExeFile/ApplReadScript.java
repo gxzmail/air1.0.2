@@ -99,6 +99,25 @@ public class ApplReadScript {
 		   ApplExecuteResultDialog.viewError("手册生成失败", "error");
 		   return false;
 	   }
+		/***xzguo
+			总结: 开始
+				
+				  if(!caseSteps.readCaseSheet(caseScrpit.getCaseScript()))		   
+				  {
+					  ApplExecuteResultDialog.viewError("手册生成失败", "error");
+					  return false;
+				  }
+
+				  结束
+		   完成的效果为将用例文件中记录，框架文件中的记录替换了%var%为实际值，放入caseSteps的caseSteps中(没有写错，
+		   第一个caseSteps是实例:
+		   ApplCaseStepsScript caseSteps = DAOFactory.getApplCaseStepsInstance();
+		   第二个caseSteps是实例中的属性
+		       private ArrayList<ApplFrmwkCase> caseSteps = new ArrayList<ApplFrmwkCase>();
+		   )
+				  
+				  
+		****/
 	   this.steps = caseSteps.getCaseSteps();   	
 
     	/**********************************************************

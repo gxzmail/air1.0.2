@@ -27,13 +27,13 @@ public class ApplConfig {
     private String DTDir = null ;
     private String CTDir = null ;
     private String OSDir = null ;
-    
+
     private String executeFile = null;  /*执行执行手册的输入路径*/
     private String exectueOutPutStat = null;
     private String exectueOutPutResult = null;
 
 
-	
+
     public static ApplConfig getInstance( )
     {
         if (instance == null)
@@ -42,12 +42,12 @@ public class ApplConfig {
         }
         return instance;
     }
-	
+
 	public ApplConfig()
 	{
 	    try{
 		  this.TestResultPath = ApplCfg.getInstance().getProperty(ApplCfg.TestResultPath_KEY);
-	      ApplFileProcess.createDir(this.TestResultPath,ApplExecuteConstValues.APPL_DIRC );	    
+	      ApplFileProcess.createDir(this.TestResultPath,ApplExecuteConstValues.APPL_DIRC );
 	      this.frmId  = ApplCfg.getInstance().getProperty(ApplCfg.FrmId_KEY);
 	      this.caseListFile  = this.TestResultPath+
 	         ApplCfg.getInstance().getProperty(ApplCfg.CaseListFile_KEY);
@@ -59,11 +59,11 @@ public class ApplConfig {
 	        ApplCfg.getInstance().getProperty(ApplCfg.CaseScript_KEY);
 	      this.frmStepPath    = this.TestResultPath+
                              frmId+ApplConstValues.stepPostfix;
-	    	    
+
 	      this.testFile  = ApplCfg.getInstance().getProperty(ApplCfg.TestFile_KEY);
 	      this.frmWorkPath   = this.casePath+
 	        ApplCfg.getInstance().getProperty(ApplCfg.FrmWorkPath_KEY);
-	    
+
 
 	      this.exectueOutPutStat = ApplCfg.getInstance().getProperty(ApplCfg.ExecuteOutSTAT_Key);
 	      this.executeFile = ApplCfg.getInstance().getProperty(ApplCfg.ExecuteFile_KEY);
@@ -75,7 +75,7 @@ public class ApplConfig {
 		    return;
 	  }
 	}
-	
+
 	public String getExectueOutPutResult() {
 		return exectueOutPutResult;
 	}
@@ -84,14 +84,14 @@ public class ApplConfig {
 		return this.exectueOutPutStat = ApplCfg.getInstance().getProperty(ApplCfg.ExecuteOutSTAT_Key);
 	}
 
-	
+
 	public String getTestFile() {
 		return this.testFile = ApplCfg.getInstance().getProperty(ApplCfg.TestFile_KEY);
 	}
 
 
 	public String getCaseListFile() {
-		
+
 		 return this.caseListFile ;
 	}
 
@@ -99,7 +99,7 @@ public class ApplConfig {
 	public String getSceneListFile() {
 		return this.sceneListFile ;
 	}
-	
+
 	public String getFrmStepPath() {
 		 return frmStepPath;
 	}
@@ -125,30 +125,30 @@ public class ApplConfig {
 
 
 	public String getTestCaseStepsScriptPath() {
-	
+
 		return TestCaseStepsScriptPath;
 	}
-	
+
 	public String getTestResultPath() {
 	     return  this.TestResultPath;
 	}
-	
+
 	public String getTestCaseScript() {
-		
+
 		return TestCaseScript;
 	}
-	
+
 	public String getExecuteFile() {
-		
+
 		this.executeFile = ApplCfg.getInstance().getProperty(ApplCfg.ExecuteFile_KEY);
 		return executeFile;
 	}
-	
-	/*@param caseId  ONXX 
-	 * 
+
+	/*@param caseId  ONXX
+	 *
 	 *@return if scene equals ON, then return TestCases\\综业平台ONLINE(ON)\\
 	 *		  if scene equals OS, then return TestCases\\周边系统实时接口(OS)\\ --从来就没用到
-	 *		  if scene equals RT, then return TestCases\\撮合交易和非交易(RT)\\ --从来就没用到 
+	 *		  if scene equals RT, then return TestCases\\撮合交易和非交易(RT)\\ --从来就没用到
 	 */
 	public String getCasePathDirc(String caseId)
     {
@@ -156,7 +156,7 @@ public class ApplConfig {
     	String pathDirc = null;
     	scene = ApplFileProcess.getStringByToken(1, "_",caseId).trim().substring(0, 2);
     	pathDirc = this.casePath+ApplCfg.caseType.get(scene);
-    	
+
     	return pathDirc;
     }
 }

@@ -20,11 +20,25 @@ public class ApplExeSheetWrite {
 
 	/**
 	 * 函数功能：把步骤数组写入到执行手册中
-	 * 函数输入：
-	 * @param FilePath   －－执行手册路径
-	 * @param steps      －－需要输出的步骤数组
+	 *
+	 * @param FilePath   －－执行手册路径 /***xzguo 输出，取值例如为Output\AIR_ExecuteFile_result\ON05_001_001_Steps.xls 
+	 * @param steps      －－输入的步骤数组 /***xzguo 输入， 取值例如为 NGTS_AM_AIR_ON05_001_001_CV01.xls的内容
 	 * 函数返回值：
 	 * 空
+	 *
+	 * /***xzguo
+	 *	举例: NGTS_AM_AIR_ON05_001_001_CV01.xls的内容如下
+	 *  
+	 *	 脚本编号	 脚本描述	 脚本执行内容	 交易日  执行阶段	 预期结果	 主机	 批步骤  错误状态	 优先级  备注
+	 *  	001 报价出库（QBW）申报，申报成功。 perl air_feeder_ezstep.pl "exec STEP_FEED 'QBW','0501010001','010107','80086','R','9=11135=D11=050101000148=01010738=1453=3448=A800860001452=5448=80086452=1448=QWESD452=400158=13912345678','reqresp_80086'" ""	 T0  ONLINE 			 Y		 
+	 *
+	 * 对应Output\AIR_ExecuteFile_result\ON05_001_001_Steps.xls的内容如下:
+	 *
+	 *	步骤编号	 脚本编号	 脚本描述	 脚本执行内容	 交易日  执行阶段	 预期结果	 主机	 批处理  错误状态	 优先级  备注
+	 *
+	 *		1	 ON05_001_001_001	 报价出库（QBW）申报，申报成功。Xzguo	 perl air_feeder_ezstep.pl "exec STEP_FEED 'QBW','0501010001','010107','80086','R','9=11135=D11=050101000148=01010738=1453=3448=A800860001452=5448=80086452=1448=QWESD452=400158=13912345678','reqresp_80086'" ""	 T0  ONLINE 			 Y	 1	 
+	 * 
+	 *	
 	 */
 	@SuppressWarnings("deprecation")
 	public   static Boolean writeExcuteSheet(String sheetName,String FilePath,ArrayList<ApplFrmwkCase> steps)

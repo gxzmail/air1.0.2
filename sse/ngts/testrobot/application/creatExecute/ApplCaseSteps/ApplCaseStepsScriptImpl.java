@@ -16,67 +16,110 @@ import sse.ngts.testrobot.engine.app.ApplExecuteResultDialog;
 import sse.ngts.testrobot.engine.unit.ApplCase;
 import sse.ngts.testrobot.engine.unit.ApplConstValues;
 import sse.ngts.testrobot.engine.unit.ApplFrmwkCase;
-/***from doc 
+/***from doc
 	类功能：
 	根据"用例详情"数组，得到该数组对应的所有用例的"步骤列表"数组
 
 ***/
 public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
-	
-    private ArrayList<ApplFrmwkCase> caseSteps = new ArrayList<ApplFrmwkCase>();  
+
+    private ArrayList<ApplFrmwkCase> caseSteps = new ArrayList<ApplFrmwkCase>();
 	private ArrayList<ApplFrmwkCase> frmWorkSteps= new ArrayList<ApplFrmwkCase>();
     private HashSet<String> tradeDate = new HashSet<String>();
 
 
-	private Hashtable<String,Integer> tradePhase = new Hashtable<String,Integer>(); 
-	private ApplXmlParse  xmlParse = ApplXmlParse.getinstance();		
+	private Hashtable<String,Integer> tradePhase = new Hashtable<String,Integer>();
+	private ApplXmlParse  xmlParse = ApplXmlParse.getinstance();
 
 	/***from doc
+		readCaseSheet()
 		函数功能：根据"用例详情"数组，读取用例脚本文件（文件格式见4.10.6），
 						生成"用例步骤"数组，读取框架文件，生成框架步骤数组。
+		输入：  ArrayList<ApplCase>caseList    －－用例列表
+		输出："用例步骤"文件（文件格式见4.9.7，文件名为：TestCaseStepsScript.xls）
+		输出："用例步骤"数组 ArrayList< ApplFrmwkCase > caseList
 
 	***/
- 
+
+
+
+	
 	public  Boolean readCaseSheet(ArrayList<ApplCase>caseList)
     {
+  /***xzguo
+  *	readCaseListSteps(caseList)函数完成将TestCases\综业平台ONLINE(ON)\脚本\ON05\NGTS_AM_AIR_ON05_001_001_CV01.xls
+  *	写入 Output\AIR_ExecuteFile_result\ON05_001_001_Steps.xls中，同时将NGTS_AM_AIR_ON05_001_001_CV01.xls中的内容
+  * 放入 caseSteps的数组中
+  *
+  ****/
     		if(!readCaseListSteps(caseList))
 				return false;
+ /***xzguo
+ * 此处的 ApplExeSheetWrite.writeExcuteSheet 是将 所有NGTS_AM_AIR_ONXX_XXX_XXX_CV01.xls(caseSteps)的内容写入
+ * Output\AIR_ExecuteFile_result\TestCaseStepsScript.xls中(ApplConfig.getInstance().getTestCaseStepsScriptPath()).
+ * 和readCaseListSteps函数的中调用ApplExeSheetWrite.writeExcuteSheet将单个NGTS_AM_AIR_ONXX_XXX_XXX_CV01.xls中的
+ * 内容写入ONXX_XXX_XXX_Steps.xls中不同，它是将所有NGTS_AM_AIR_ONXX_XXX_XXX_CV01.xls的内容写入TestCaseStepsScript.xls
+ *中
+ ***/
 			ApplExeSheetWrite.writeExcuteSheet(ApplConstValues.OutPutStepsSheetName,
     			ApplConfig.getInstance().getTestCaseStepsScriptPath(),
                 caseSteps);
+/***xzguo
+ * 中间细节没有细看
+ * readFrmSheet() 函数  和 ApplExeSheetWrite.writeExcuteSheet()函数
+ * 	作用是将TestCases\AIR框架脚本\NGTS_AM_AIR_综合业务测试框架_CV01.xls
+ *	(ApplConfig.getInstance().getFrmWorkPath())的内容写入 Output\AIR_ExecuteFile_result\FW01_001_001_Steps.xls中
+ *
+ */
 			if(!readFrmSheet(ApplConfig.getInstance().getFrmWorkPath(), ApplConfig.getInstance().getFrmId()))
 				return false;
 			ApplExeSheetWrite.writeExcuteSheet(ApplConstValues.OutPutStepsSheetName,
     			ApplConfig.getInstance().getFrmStepPath(),
     			frmWorkSteps);
-						
+
 		/****************************************************
 		 * 根据配置文件更新步骤
 		 ****************************************************/
 			if(!xmlParse.readxml())
 			{
 				Logger.getLogger(ApplConstValues.logName).
+/***xzguo modify
+	log(Level.SEVERE,"打开配置文件\"cfg\\AIR_Config.xml\"出错"); 因该改为
+	log(Level.SEVERE,"打开配置文件\"cfg\\AIR_Config.txt\"出错");
+***/
      	        log(Level.SEVERE,"打开配置文件\"cfg\\AIR_Config.xml\"出错");
 				return false;
 			}
+/***xzguo
+	替换用例里的%var%的变量为实际值
+***/
 			replaceCaseSteps(caseSteps);
-			replaceFrameSteps(frmWorkSteps);					
+/***xzguo
+	替换
+***/
+			replaceFrameSteps(frmWorkSteps);
     	/*****************************************************
          * 查看框架步骤中的所有步骤的优先级是否高于脚本中的所有步骤的
          * 优先级
-         ******************************************************/
+       ******************************************************/
+/***xzguo
+*	上面的注释"查看框架步骤中的所有步骤的优先级是否高于脚本中的所有步骤的优先级"不准确，
+*	应该是查看框架中所有步骤的最大优先级是否高于脚本用例中所有步骤的最大优先级
+*
+***/
+
     	if(!comparePriority(caseSteps,frmWorkSteps))
     	{
     		Logger.getLogger(ApplConstValues.logName).
      	        log(Level.SEVERE, "程序执行失败，框架中步骤的优先级低于用例脚本中步骤的优先级！！");
-     	   
+
      	    return false;
-     	    
+
     	}
     	caseSteps.addAll(frmWorkSteps);
     	return true;
     }
-	
+
 	private void replaceFrameSteps(ArrayList<ApplFrmwkCase> steps)
 	{
 		Iterator<ApplFrmwkCase> iter = steps.iterator();
@@ -97,12 +140,12 @@ public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
 				}
 			}
 
-		}	
+		}
 		replaceCaseSteps(steps);
 	}
-	
+
 	private void replaceCaseSteps(ArrayList<ApplFrmwkCase> steps)
-	{		
+	{
 		Iterator<ApplFrmwkCase> iter = steps.iterator();
 		Hashtable<String,String> xmlP = new Hashtable<String,String>();
 		xmlP = xmlParse.getXmlParse();
@@ -110,7 +153,7 @@ public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
 		{
 			ApplFrmwkCase elem = iter.next();
 			String s = null;
-			
+
             for(String key:xmlP.keySet())
 			{
 				if(elem.getTestContent().indexOf(key)!= -1)
@@ -119,11 +162,11 @@ public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
 					elem.setTestContent(s);
 				}
 			}
-			
-			
+
+
 		}
 	}
-	
+
 	private Boolean comparePriority(ArrayList<ApplFrmwkCase> steps1,ArrayList<ApplFrmwkCase> steps2)
 	{
 		String str1 = getMaxPriority(steps1);
@@ -133,7 +176,7 @@ public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
 		else
 			return false;
 	}
-	
+
 	private String getMaxPriority(ArrayList<ApplFrmwkCase> steps)
 	{
 		Iterator<ApplFrmwkCase> c = steps.iterator();
@@ -142,10 +185,10 @@ public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
 		while(c.hasNext())
 		{
 			testPrior = c.next().getTestPrior();
-		
+
 			if(maxPrior == null)
 				maxPrior = testPrior;
-			else if(maxPrior.compareToIgnoreCase(testPrior)>0) 
+			else if(maxPrior.compareToIgnoreCase(testPrior)>0)
 				maxPrior = testPrior;
 		}
 		return maxPrior;
@@ -163,11 +206,11 @@ public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
     *********************************************/
 	public Boolean readCaseListSteps(ArrayList<ApplCase>caseList)
     {
-    	
+
 		Logger.getLogger(ApplConstValues.logName).
              entering("ApplCaseStepsScriptImpl", "readCaseListSteps");
 		Iterator<ApplCase> c = caseList.iterator();
-    	
+
         String pathDirc = null;
         String filePath = null;
     	while(c.hasNext())
@@ -175,7 +218,7 @@ public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
     		ApplCase caseDescrip = new ApplCase();
     		caseDescrip = c.next();
     		String sceneId = null;
-    		
+
     		pathDirc = ApplConfig.getInstance().getCasePathDirc(caseDescrip.getCaseId());
     		/*场景ID*/
     		sceneId = ApplFileProcess.getStringByToken(1, "_",caseDescrip.getCaseId());
@@ -189,46 +232,59 @@ public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
     			File file = new File(filePath);
     			ApplCaseSteps step = new ApplCaseSteps();
     		/***xzguo
-    		 *  
+    		 *
     		 */
     			if(!step.readCaseStep(ApplConstValues.stepSheetName, file, 3, caseDescrip))
     				return false;
     		    /*每个用例文件的步骤文件路径*/
+    		/***xzguo
+    		 * caseStepsTxtPath 值为  Output\AIR_ExecuteFile_result\ON05_001_001_Steps.xls
+    		 *
+    		 */
     		    String caseStepsTxtPath = ApplConfig.getInstance().getTestResultPath()+
 	    		                    caseDescrip.getCaseId()+ApplConstValues.stepPostfix;
+			/***xzguo
+		     *	ApplExeSheetWrite.writeExcuteSheet函数将NGTS_AM_AIR_ON05_001_001_CV01.xls的内容(step.getSteps())
+		     *	写入 Output\AIR_ExecuteFile_result\ON05_001_001_Steps.xls中(caseStepsTxtPath)，sheet名为步骤(ApplConstValues.OutPutStepsSheetName)
+		     *	该函数是实现单个NGTS_AM_AIR_ONXX_001_001_CV01.xls写入单个ONXX_001_001_Steps.xls
+			 */
     		    ApplExeSheetWrite.writeExcuteSheet(ApplConstValues.OutPutStepsSheetName,caseStepsTxtPath,step.getSteps());
-    		    caseSteps.addAll(step.getSteps());	
+			/***xzguo
+			*	caseSteps.addAll(step.getSteps())函数是将step.getSteps放入caseSteps列表的末尾
+			*
+			*/
+    		    caseSteps.addAll(step.getSteps());
     		}
     		catch(Exception e){
     			Logger.getLogger(ApplConstValues.logName).
-                    log(Level.SEVERE, "读文件{0}失败",filePath);	
-    			
+                    log(Level.SEVERE, "读文件{0}失败",filePath);
+
     			Logger.getLogger(ApplConstValues.logName).
                     log(Level.SEVERE, "执行手册生成失败 ");
-				ApplExecuteResultDialog.viewError("执行失败,读取文件"+filePath+"失败", "ERROR");   			
+				ApplExecuteResultDialog.viewError("执行失败,读取文件"+filePath+"失败", "ERROR");
 				return false;
     		}
 
 
-    	} 
+    	}
     	setTradeDate(this.caseSteps);
 		return true;
 
-    	
+
     }
-    
-	
+
+
 	public Boolean readFrmSheet(String frmWorkPath,String frameWorkId)
 	{
 		Logger.getLogger(ApplConstValues.logName).
              entering("ApplCaseFramworkScript", "initApplFrmStep");
 		try{
-			
+
 			File file = new File(frmWorkPath);
 			ApplCase a = new ApplCase();
 			a.setCaseId(frameWorkId);
-			
-			ApplCaseSteps frmSteps = new ApplCaseSteps();		
+
+			ApplCaseSteps frmSteps = new ApplCaseSteps();
 			if(!frmSteps.readCaseStep(ApplConstValues.caseSheetName, file, 3,a))
 				return false;
 			setTradePhase(frmSteps.getSteps());
@@ -238,7 +294,7 @@ public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
 			String date;
 			Iterator<ApplFrmwkCase> b = frmSteps.getSteps().iterator();
 			while(b.hasNext())
-			{ 
+			{
 				b.next();
 				j++;
 			}
@@ -252,13 +308,13 @@ public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
 		catch(Exception e)
 		{
 			Logger.getLogger(ApplConstValues.logName).
-              log(Level.SEVERE, "读文件{0}失败",frmWorkPath);	
+              log(Level.SEVERE, "读文件{0}失败",frmWorkPath);
 			ApplExecuteResultDialog.viewError("执行失败，读文件"+frmWorkPath+"失败", "ERROR");
 			return false;
 		}
-		return true;	
+		return true;
 	}
-	
+
 	/*
 	 *函数功能：更改步骤中的交易日
 	 *函数输入：
@@ -269,13 +325,13 @@ public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
 	 */
 	private ArrayList<ApplFrmwkCase> chgSteps(ArrayList<ApplFrmwkCase> frmWorkSteps,String tradeDate)
 	{
-		
-		
+
+
 		ArrayList<ApplFrmwkCase> fSteps = new ArrayList<ApplFrmwkCase>();
 		Iterator<ApplFrmwkCase> c = frmWorkSteps.iterator();
 	  	while(c.hasNext())
 	  	{
-	  		
+
 	  		ApplFrmwkCase d = new ApplFrmwkCase();
 	  		d = c.next().clone();
 	  		d.setTestDate(tradeDate);
@@ -283,7 +339,7 @@ public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
 	  	}
 	  	return fSteps;
 	}
-	
+
     /***********************************************
      * 函数功能：根据用例步骤数组获取交易日
      * 函数输入：
@@ -294,18 +350,23 @@ public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
 	private void setTradeDate(ArrayList<ApplFrmwkCase> Steps)
     {
     	Iterator<ApplFrmwkCase> c = Steps.iterator();
-    	
+
         while(c.hasNext())
         {
         	this.tradeDate.add(c.next().getTestDate());
         }
     }
 
+/***xzguo
+*	setTradePhase()函数功能为将ApplFrmwkCase类的一个实例(即对应NGTS_AM_AIR_ONXX_XXX_XXX.CV01.xls的一行记录)中的
+*	testPhase(对应一行记录中的执行阶段)内容(无重复内容)放入tradePhase哈希表中
+*
+***/
 	public void setTradePhase(ArrayList<ApplFrmwkCase> e) {
 		Iterator<ApplFrmwkCase> c = e.iterator();
 		String str = new String();
 		ArrayList<String> str3 = new ArrayList<String>();
-	   
+
 		int i = 0;
 		while(c.hasNext())
 		{
@@ -313,14 +374,14 @@ public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
 			if(str3.contains((String)str))
 				continue;
 			else
-			{   
+			{
 				str3.add(str);
 				tradePhase.put(str,(Integer)i);
 				i++;
 			}
 		}
 	}
-    
+
 	public ArrayList<ApplFrmwkCase> getCaseSteps() {
 			return caseSteps;
 	}
@@ -328,7 +389,7 @@ public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
 	public Hashtable<String, Integer> getTradePhase() {
 		return tradePhase;
 	}
-	
+
 
 
 }
