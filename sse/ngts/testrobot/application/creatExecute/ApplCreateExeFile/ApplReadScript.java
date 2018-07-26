@@ -22,7 +22,7 @@ public class ApplReadScript {
     public ApplReadScript()
     {
     }
-	
+
 	public Boolean stepsGet()
 	{
     	/***********************************
@@ -40,7 +40,7 @@ public class ApplReadScript {
     	if(!B.readCycleFile(A.getTestFile()))
     		return false;
 	/***xzguo
-		A.getCaseListFile 通过debug为 Output\AIR_ExecuteFile_result\Case_File.txt, 
+		A.getCaseListFile 通过debug为 Output\AIR_ExecuteFile_result\Case_File.txt,
 		内容举例如下:
 		0|IF01_001_001
 		1|IF01_001_002
@@ -50,15 +50,15 @@ public class ApplReadScript {
 		内容举例如下:
 		0|IF01
 		1|IF02
-		
+
 	***/
     	B.outPutCaseListFile(A.getCaseListFile());
     	B.outPutSceneListFile(A.getSceneListFile());
-    	
+
     	/******************************************************
     	* 根据用例列表与场景列表，获取用例详情,并把详情输出到文件中
     	******************************************************/
-    	
+
     	ApplCaseScript caseScrpit = DAOFactory.getApplCaseScriptInstance();
     	ApplCaseStepsScript caseSteps = DAOFactory.getApplCaseStepsInstance();
 
@@ -67,42 +67,42 @@ public class ApplReadScript {
 
 	    caseScrpit.outPutCaseDetails(caseScrpit.getCaseScript(),
 			                     A.getTestCaseScript());
-    
-	    
+
+
 	 	/******************************************************
     	* 读取配置文件"cfg\\air_configs.txt"
-    	******************************************************/ 
+    	******************************************************/
     	ApplXmlParse airConfig = ApplXmlParse.getinstance();
     	if(!airConfig.readxml())
     	{
-        	ApplExecuteResultDialog.viewError("读取配置文件\"cfg\\air_configs.txt\"出错！","failed" );	
+        	ApplExecuteResultDialog.viewError("读取配置文件\"cfg\\air_configs.txt\"出错！","failed" );
     	    return false;
-    	}                      
+    	}
 
 		/***xzguo
 
-				总结: 从     	ApplCaseScript caseScrpit = DAOFactory.getApplCaseScriptInstance(); 
+				总结: 从     	ApplCaseScript caseScrpit = DAOFactory.getApplCaseScriptInstance();
 				该行开始到
-				ApplExecuteResultDialog.viewError("读取配置文件\"cfg\\air_configs.txt\"出错！","failed" );	
+				ApplExecuteResultDialog.viewError("读取配置文件\"cfg\\air_configs.txt\"出错！","failed" );
 				return false;
-				结束，完成将circle.txt中的记录从D_ONXX中取出，  ???  放入caseScript数组中???
-				
-				             
-				
+				结束，完成将circle.txt中的记录从D_ONXX中取出，  放入caseScript数组中
+
+
+
     	****/
-		
+
 	   /***************************************
        * 获取用例步骤,并把所有的步骤输出到文件中
        * *************************************/
-	   if(!caseSteps.readCaseSheet(caseScrpit.getCaseScript()))  	  	
+	   if(!caseSteps.readCaseSheet(caseScrpit.getCaseScript()))
 	   {
 		   ApplExecuteResultDialog.viewError("手册生成失败", "error");
 		   return false;
 	   }
 		/***xzguo
 			总结: 开始
-				
-				  if(!caseSteps.readCaseSheet(caseScrpit.getCaseScript()))		   
+
+				  if(!caseSteps.readCaseSheet(caseScrpit.getCaseScript()))
 				  {
 					  ApplExecuteResultDialog.viewError("手册生成失败", "error");
 					  return false;
@@ -115,10 +115,10 @@ public class ApplReadScript {
 		   第二个caseSteps是实例中的属性
 		       private ArrayList<ApplFrmwkCase> caseSteps = new ArrayList<ApplFrmwkCase>();
 		   )
-				  
-				  
+
+
 		****/
-	   this.steps = caseSteps.getCaseSteps();   	
+	   this.steps = caseSteps.getCaseSteps();
 
     	/**********************************************************
          * 把所有的步骤按照交易日、交易阶段、优先级排序，并输出到文件中
@@ -130,27 +130,27 @@ public class ApplReadScript {
 	String:batch  Integer:1
 	该hash表结束
 ***/
-    	Collections.sort(this.steps,new ApplStepsSorts(caseSteps.getTradePhase()));    	
+    	Collections.sort(this.steps,new ApplStepsSorts(caseSteps.getTradePhase(), A.getFrmId()));
     	ApplExeSheetWrite.writeExcuteSheet(ApplConstValues.excuteSheetName,
     			                        A.getExecuteFile(),
     			                        this.steps);
     	Logger.getLogger(ApplConstValues.logName).
  	             log(Level.INFO, "程序执行完成！！");
- 	   
+
 
     	ApplExecuteResultDialog.viewSuccess("手册生成成功", "success");
 	    return true;
 	}
-	
 
-	
-	
+
+
+
 
 
 	public ArrayList<ApplFrmwkCase> getSteps() {
 		return steps;
 	}
-	
+
 
 
 }

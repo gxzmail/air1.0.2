@@ -41,7 +41,7 @@ public class ApplCaseSteps{
 	 *String sheetNm        －－脚本表单名称     /***xzguo     每个xls的sheet为测试脚本
 	 *File file             －－脚本路径
 	 *int num               －－从第几行开始读
-	 *ApplCase caseDetail   －－用例详情     /***xzguo  D_ONxx.xls中的一行
+	 *ApplCase caseDetail   －－用例详情     /***xzguo  D_ONxx.xls中的一行，为了获取该行中的 "用例描述" 字段给steps数组中
 	 *函数返回值：
 	 *空
 	 *************************************/
@@ -79,7 +79,7 @@ public class ApplCaseSteps{
  *  赋值给titleDesc
  */
                     titleDesc = AppSheetRead.getTitleDesc(row);
-/***xzguo   不对，貌似分析的不对
+/***xzguo
  * AppSheetRead.deteTilt(titleDesc,ApplConstValues.stepTitle, file.getAbsolutePath()) 作用是
  * 检查   列    描述所在的行的值都在ApplConstValues.stepTitle 中
  */
@@ -95,6 +95,12 @@ public class ApplCaseSteps{
                 																		//(NGTS_AM_AIR_ON05_001_001_CV01.xls中第4行，row取值为 3 )
                 																		//关联起来，可以
                 																		//通过列标签找到对应的值
+
+	/***xzguo
+	* 下面的if判断语句(一直到ApplStepsSet step = new ApplStepsSet();语句之前)，是用来校验的
+	* 确保NGTS_AM_AIR_ON05_001_001_CV01.xls文件中的一行记录的关键属性非空
+	*
+	*/
                     if(values.get("脚本编号").toString().isEmpty())
                         continue;
                     if(values.get("交易日").toString().isEmpty())

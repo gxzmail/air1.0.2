@@ -89,7 +89,10 @@ public class ApplStepsSet {
 	     {
 	    	 if(value.isEmpty())
 	    	 {
-	    		 if(!caseDetail.getTestPrior().isEmpty())
+	    	 /***xzguo !caseDetail.getTestPrior().isEmpty()含义 :
+	    	  * NGTS_AM_AIR_ON05_001_001_CV01.xls中优先级没填，则取NGTS_AM_AIR_D_ON05_CV01.xls记录的优先级值
+	    	  */
+	    		 if(!caseDetail.getTestPrior().isEmpty()) 
 	    			 this.steps.setTestPrior(NumChg(caseDetail.getTestPrior().trim()));
 	    		 else
 	    			 this.steps.setTestPrior(NumChg("5"));

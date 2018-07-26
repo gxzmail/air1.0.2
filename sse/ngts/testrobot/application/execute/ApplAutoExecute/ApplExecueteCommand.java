@@ -1,3 +1,14 @@
+/*
+ *  Created on: 2017-5-26
+ *      Author: xzguo
+ *  Time		SIR MAKR    		DESCRIPTION
+ * 2017-05-26	sir 1		modify the air turns to be red although the  expect is the same with response
+ *
+ */
+
+
+
+
 package sse.ngts.testrobot.application.execute.ApplAutoExecute;
 
 import java.io.BufferedReader;
@@ -51,7 +62,10 @@ public class ApplExecueteCommand {
 			ApplStreamGobbler(pro.getInputStream(), "OUTPUT"); 
 			outputGobbler.start(); 
 			int exitVal = pro.waitFor(); 
-			System.out.println("ExitValue: " + exitVal); 
+			System.out.println("ExitValue: " + exitVal);			
+/*sir 1 begin*/
+			outputGobbler.join(); //***xzguo 直接从air1.0.5迁移过来，没有测试和逻辑核对。应该没有问题
+/*sir 1 end*/
 			int count=3;
             while(exitVal==13&& count>0)
             {

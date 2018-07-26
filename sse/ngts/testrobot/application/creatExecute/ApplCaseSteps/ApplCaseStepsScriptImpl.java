@@ -16,6 +16,8 @@ import sse.ngts.testrobot.engine.app.ApplExecuteResultDialog;
 import sse.ngts.testrobot.engine.unit.ApplCase;
 import sse.ngts.testrobot.engine.unit.ApplConstValues;
 import sse.ngts.testrobot.engine.unit.ApplFrmwkCase;
+//import sse.ngts.testrobot.application.creatExecute.ApplCaseSteps.ApplCaseSteps;
+
 /***from doc
 	类功能：
 	根据"用例详情"数组，得到该数组对应的所有用例的"步骤列表"数组
@@ -43,7 +45,7 @@ public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
 
 
 
-	
+
 	public  Boolean readCaseSheet(ArrayList<ApplCase>caseList)
     {
   /***xzguo
@@ -106,6 +108,8 @@ public class ApplCaseStepsScriptImpl implements ApplCaseStepsScript{
 *	上面的注释"查看框架步骤中的所有步骤的优先级是否高于脚本中的所有步骤的优先级"不准确，
 *	应该是查看框架中所有步骤的最大优先级是否高于脚本用例中所有步骤的最大优先级
 *
+*   该优先级比较是为了NGTS_AM_AIR_ON05_001_001_CV01.xls和框架用例在排序时，按照优先级升序排序，
+*   先框架用例，后NGTS_AM_AIR_ON05_001_001_CV01.xls用例
 ***/
 
     	if(!comparePriority(caseSteps,frmWorkSteps))
